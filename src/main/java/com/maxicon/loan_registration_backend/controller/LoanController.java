@@ -43,6 +43,11 @@ public class LoanController {
         return ResponseEntity.ok(savedLoan);
     }
 
+    @GetMapping
+    public List<Loan> getAllLoans() {
+        return loanService.getAllLoans();
+    }
+
     @GetMapping("/client/{cpf}")
     public ResponseEntity<List<Loan>> getLoansByClientCpf(@PathVariable String cpf) {
         List<Loan> loans = loanService.getLoansByClientCpf(cpf);
