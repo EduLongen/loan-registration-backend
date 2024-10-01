@@ -19,8 +19,15 @@ public class LoanService {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private CurrencyService currencyService; // Inject CurrencyService
+
     // Register a loan - client is already part of the loan entity
     public Loan registerLoan(Loan loan) {
+        // Additional validation to ensure the currency is valid
+        if (!currencyService.getCachedCurrencyData().containsKey(loan.getCurrency())) {
+            throw new IllegalArgumentException("Invalid currency code: " + loan.getCurrency());
+        }
         return loanRepository.save(loan);
     }
 

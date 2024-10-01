@@ -20,8 +20,4 @@ public class Client {
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
-    // Optional: Add manual getter if Lombok isn't working
-    public String getCpf() {
-        return cpf;
-    }
 }
