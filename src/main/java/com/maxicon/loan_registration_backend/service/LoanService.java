@@ -7,6 +7,10 @@ import com.maxicon.loan_registration_backend.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,16 +24,59 @@ public class LoanService {
     private ClientRepository clientRepository;
 
     @Autowired
-    private CurrencyService currencyService; // Inject CurrencyService
-
-    // Register a loan - client is already part of the loan entity
-    public Loan registerLoan(Loan loan) {
-        // Additional validation to ensure the currency is valid
-        if (!currencyService.getCachedCurrencyData().containsKey(loan.getCurrency())) {
-            throw new IllegalArgumentException("Invalid currency code: " + loan.getCurrency());
+    private CurrencyService currencyService;
+    
+    public Loan registerLoan(Loan loan, BigDecimal interestRate) {
+        // Ensure the interest rate is valid
+        if (interestRate.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Interest rate must be greater than 0");
         }
+    
+        BigDecimal principal = loan.getAmount();
+        int compoundsPerYear = 12;
+    
+        // Calculate the total amount with compound interest
+        BigDecimal totalAmount = calculateCompoundInterest(
+            principal,
+            interestRate,
+            compoundsPerYear,
+            loan.getLoanDate(),
+            loan.getDueDate()
+        );
+    
+        loan.setTotalAmount(totalAmount);
+        loan.setInterestRate(interestRate);
+    
+        // Fetch the exchange rate to BRL from the CurrencyService
+        BigDecimal exchangeRateToBRL = currencyService.getExchangeRateToBRL(loan.getCurrency());
+        loan.setExchangeRateToBRL(exchangeRateToBRL);
+    
+        // Calculate the total amount in BRL and store it
+        BigDecimal totalInBRL = totalAmount.multiply(exchangeRateToBRL).setScale(2, RoundingMode.HALF_UP);
+        loan.setTotalInBRL(totalInBRL);
+    
         return loanRepository.save(loan);
-    }
+    }    
+
+    private BigDecimal calculateCompoundInterest(BigDecimal principal, BigDecimal annualInterestRate, int compoundsPerYear, LocalDate startDate, LocalDate endDate) {
+        // Calculate the total number of days between loan start and end dates
+        long totalDays = ChronoUnit.DAYS.between(startDate, endDate);
+    
+        // Convert days into years (account for fractional years)
+        BigDecimal years = BigDecimal.valueOf(totalDays).divide(BigDecimal.valueOf(365), 10, RoundingMode.HALF_UP); 
+    
+        // Calculate the interest rate per compounding period
+        BigDecimal interestPerPeriod = annualInterestRate.divide(BigDecimal.valueOf(compoundsPerYear), 10, RoundingMode.HALF_UP);
+    
+        // Apply the compound interest formula: A = P(1 + r/n)^(nt)
+        BigDecimal compoundFactor = BigDecimal.ONE.add(interestPerPeriod).pow(compoundsPerYear * years.intValue()); 
+        
+        // Instead of using `years.intValue()`, we use the full value:
+        BigDecimal powerExponent = years.multiply(BigDecimal.valueOf(compoundsPerYear));
+        BigDecimal totalAmount = principal.multiply(BigDecimal.ONE.add(interestPerPeriod).pow(powerExponent.intValue())).setScale(2, RoundingMode.HALF_UP);
+    
+        return totalAmount;
+    }    
 
     public List<Loan> getAllLoans() {
         return loanRepository.findAll();
@@ -51,9 +98,10 @@ public class LoanService {
             existingLoan.setCurrency(loanDetails.getCurrency());
             existingLoan.setLoanDate(loanDetails.getLoanDate());
             existingLoan.setDueDate(loanDetails.getDueDate());
+            existingLoan.setInterestRate(loanDetails.getInterestRate());
             return loanRepository.save(existingLoan);
         }
-        return null;  // Handle error case when loan not found
+        return null;
     }
 
     public List<Loan> getLoansByClientCpf(String cpf) {
@@ -62,3 +110,4 @@ public class LoanService {
         return loanRepository.findByClient(client);
     }
 }
+

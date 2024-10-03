@@ -5,13 +5,13 @@ import com.maxicon.loan_registration_backend.entity.Client;
 import com.maxicon.loan_registration_backend.entity.Loan;
 import com.maxicon.loan_registration_backend.service.ClientService;
 import com.maxicon.loan_registration_backend.service.LoanService;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/loans")
@@ -23,22 +23,21 @@ public class LoanController {
     @Autowired
     private ClientService clientService;
 
-    @PostMapping  // Handles POST requests to /api/loans
+    @PostMapping 
     public ResponseEntity<Loan> createLoan(@RequestBody LoanRequest loanRequest) {
-        // Retrieve the client by CPF
         Client client = clientService.findByCpf(loanRequest.getCpf())
                 .orElseThrow(() -> new IllegalArgumentException("Client not found with CPF: " + loanRequest.getCpf()));
 
-        // Create a new loan and set its properties
         Loan loan = new Loan();
         loan.setClient(client);
-        loan.setAmount(loanRequest.getAmount());
+        loan.setAmount(BigDecimal.valueOf(loanRequest.getAmount()));
         loan.setCurrency(loanRequest.getCurrency());
         loan.setLoanDate(loanRequest.getLoanDate());
         loan.setDueDate(loanRequest.getDueDate());
 
-        // Save the loan
-        Loan savedLoan = loanService.registerLoan(loan);
+        BigDecimal interestRate = BigDecimal.valueOf(loanRequest.getInterestRate());
+
+        Loan savedLoan = loanService.registerLoan(loan, interestRate);
 
         return ResponseEntity.ok(savedLoan);
     }
