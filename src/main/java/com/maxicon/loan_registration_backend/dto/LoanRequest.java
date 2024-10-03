@@ -4,12 +4,13 @@ import java.time.LocalDate;
 
 public class LoanRequest {
     private String cpf;
-    private Double amount;
+    private double amount;
     private String currency;
-    private LocalDate loanDate;  // Changed to LocalDate
-    private LocalDate dueDate;  // Changed to LocalDate
+    private LocalDate loanDate;
+    private LocalDate dueDate;
+    private double interestRate;
+    private int compoundsPerYear;
 
-    // Getters and Setters
     public String getCpf() {
         return cpf;
     }
@@ -18,11 +19,11 @@ public class LoanRequest {
         this.cpf = cpf;
     }
 
-    public Double getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -48,5 +49,21 @@ public class LoanRequest {
 
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public double getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
+    }
+
+    public int getCompoundsPerYear() {
+        return compoundsPerYear;
+    }
+
+    public void setCompoundsPerYear(int compoundsPerYear) {
+        this.compoundsPerYear = compoundsPerYear;
     }
 }

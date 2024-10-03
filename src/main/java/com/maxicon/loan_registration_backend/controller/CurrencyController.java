@@ -29,5 +29,11 @@ public class CurrencyController {
         LocalDate end = LocalDate.parse(endDate);
         return currencyService.getExchangeRate(currencyCode, start, end);
     }
+
+    @GetMapping("/to-brl")
+    public Map<String, Double> getBRLConversionRates() {
+        return currencyService.getBRLConversionRates();
+    }
+
 }
 
