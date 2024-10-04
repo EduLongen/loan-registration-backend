@@ -26,7 +26,7 @@ public class LoanController {
     @PostMapping 
     public ResponseEntity<Loan> createLoan(@RequestBody LoanRequest loanRequest) {
         Client client = clientService.findByCpf(loanRequest.getCpf())
-                .orElseThrow(() -> new IllegalArgumentException("Client not found with CPF: " + loanRequest.getCpf()));
+                .orElseThrow(() -> new IllegalArgumentException("Não foi possível encontrar o cliente com o cpf: " + loanRequest.getCpf()));
 
         Loan loan = new Loan();
         loan.setClient(client);

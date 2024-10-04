@@ -4,7 +4,6 @@ import com.maxicon.loan_registration_backend.entity.Client;
 import com.maxicon.loan_registration_backend.service.ClientService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class ClientController {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }
+    }       
 
     @GetMapping("/{cpf}")
     public ResponseEntity<Client> getClientByCpf(@PathVariable String cpf) {
