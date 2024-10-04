@@ -54,5 +54,19 @@ public class ClientService {
         // If no loans are found, proceed to delete the client
         clientRepository.deleteById(id);
     }
+
+
+    public Optional<Client> findById(Long id) {
+        return clientRepository.findById(id);  // Assuming clientRepository is a JpaRepository or CrudRepository
+    }
+
+    public Optional<Client> updateClient(Long id, Client updatedClient) {
+        return clientRepository.findById(id).map(existingClient -> {
+            existingClient.setName(updatedClient.getName());
+            existingClient.setLastName(updatedClient.getLastName());
+            existingClient.setCpf(updatedClient.getCpf());
+            return clientRepository.save(existingClient);
+        });
+    }        
     
 }
