@@ -35,13 +35,21 @@ public class LoanService {
         BigDecimal principal = loan.getAmount();
         int compoundsPerYear = 12;
     
+        // Calculate the number of months between loanDate and dueDate
+        long months = ChronoUnit.MONTHS.between(loan.getLoanDate(), loan.getDueDate());
+        if (months <= 0) {
+            throw new IllegalArgumentException("Due date must be after loan date");
+        }
+    
+        // Set the calculated months in the Loan entity
+        loan.setMonths((int) months);  // <-- Aqui você está setando o valor de months
+        
         // Calculate the total amount with compound interest
         BigDecimal totalAmount = calculateCompoundInterest(
             principal,
             interestRate,
-            compoundsPerYear,
-            loan.getLoanDate(),
-            loan.getDueDate()
+            months,
+            compoundsPerYear
         );
     
         loan.setTotalAmount(totalAmount);
@@ -56,27 +64,25 @@ public class LoanService {
         loan.setTotalInBRL(totalInBRL);
     
         return loanRepository.save(loan);
-    }    
+    }       
 
-    private BigDecimal calculateCompoundInterest(BigDecimal principal, BigDecimal annualInterestRate, int compoundsPerYear, LocalDate startDate, LocalDate endDate) {
-        // Calculate the total number of days between loan start and end dates
-        long totalDays = ChronoUnit.DAYS.between(startDate, endDate);
-        
-        // Convert days into years (account for fractional years)
-        BigDecimal years = BigDecimal.valueOf(totalDays).divide(BigDecimal.valueOf(365), 10, RoundingMode.HALF_UP); 
-        
+    // Correct method to calculate compound interest using months
+    private BigDecimal calculateCompoundInterest(BigDecimal principal, BigDecimal annualInterestRate, long months, int compoundsPerYear) {
+        // Convert months to years (e.g., 13 months = 13 / 12 years)
+        BigDecimal years = BigDecimal.valueOf(months).divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+
         // Calculate the interest rate per compounding period
         BigDecimal interestPerPeriod = annualInterestRate.divide(BigDecimal.valueOf(compoundsPerYear), 10, RoundingMode.HALF_UP);
-        
-        // Calculate the exponent nt (total number of compounding periods)
-        BigDecimal powerExponent = years.multiply(BigDecimal.valueOf(compoundsPerYear));
-        
-        // Apply the compound interest formula: A = P(1 + r/n)^(nt)
-        BigDecimal totalAmount = principal.multiply(BigDecimal.ONE.add(interestPerPeriod).pow(powerExponent.intValue())).setScale(2, RoundingMode.HALF_UP);
-        
-        return totalAmount;
-    }        
 
+        // Calculate the number of compounding periods
+        BigDecimal numberOfPeriods = years.multiply(BigDecimal.valueOf(compoundsPerYear));
+
+        // Apply the compound interest formula: A = P(1 + r/n)^(nt)
+        BigDecimal totalAmount = principal.multiply(BigDecimal.ONE.add(interestPerPeriod).pow(numberOfPeriods.intValue())).setScale(2, RoundingMode.HALF_UP);
+
+        return totalAmount;
+    }
+    
     public List<Loan> getAllLoans() {
         return loanRepository.findAll();
     }
