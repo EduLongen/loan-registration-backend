@@ -36,13 +36,15 @@ public class Loan {
     @Column(nullable = false)
     private BigDecimal interestRate;
 
-    @Column(name = "exchange_rate_to_brl", nullable = true)  // Add the exchange rate column
+    @Column(name = "exchange_rate_to_brl", nullable = true)
     private BigDecimal exchangeRateToBRL;
 
-    @Column(name = "total_in_brl", nullable = true)  // Add the total amount in BRL column
+    @Column(name = "total_in_brl", nullable = true)
     private BigDecimal totalInBRL;
 
-    // Getters and setters for new fields
+    @Column(name = "months", nullable = false)
+    private Integer months;
+
     public BigDecimal getExchangeRateToBRL() {
         return exchangeRateToBRL;
     }
@@ -58,4 +60,13 @@ public class Loan {
     public void setTotalInBRL(BigDecimal totalInBRL) {
         this.totalInBRL = totalInBRL;
     }
+
+    public Integer getMonths() {
+        return months;
+    }
+    
+    public void setMonths(Integer months) {
+        this.months = months;
+    }
+    
 }
