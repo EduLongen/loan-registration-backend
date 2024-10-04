@@ -56,6 +56,14 @@ public class ClientController {
                      .body(Collections.singletonMap("error", e.getMessage()));
 
         }
-    }    
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody Client updatedClient) {
+        return clientService.updateClient(id, updatedClient)
+            .map(client -> ResponseEntity.ok(client))
+            .orElse(ResponseEntity.notFound().build());
+    }
     
+
 }
