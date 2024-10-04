@@ -1,5 +1,6 @@
 package com.maxicon.loan_registration_backend.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ public class Loan {
     private Client client;
 
     @Column(nullable = false)
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(nullable = false)
     private String currency;
@@ -29,48 +30,43 @@ public class Loan {
     @Column(nullable = false)
     private LocalDate dueDate;
 
-    // Getter and Setter for client
-    public Client getClient() {
-        return client;
+    @Column(nullable = false)
+    private BigDecimal totalAmount;
+
+    @Column(nullable = false)
+    private BigDecimal interestRate;
+
+    @Column(name = "exchange_rate_to_brl", nullable = true)
+    private BigDecimal exchangeRateToBRL;
+
+    @Column(name = "total_in_brl", nullable = true)
+    private BigDecimal totalInBRL;
+
+    @Column(name = "months", nullable = false)
+    private Integer months;
+
+    public BigDecimal getExchangeRateToBRL() {
+        return exchangeRateToBRL;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setExchangeRateToBRL(BigDecimal exchangeRateToBRL) {
+        this.exchangeRateToBRL = exchangeRateToBRL;
     }
 
-    // Getter and Setter for amount
-    public Double getAmount() {
-        return amount;
+    public BigDecimal getTotalInBRL() {
+        return totalInBRL;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    public void setTotalInBRL(BigDecimal totalInBRL) {
+        this.totalInBRL = totalInBRL;
     }
 
-    // Getter and Setter for currency
-    public String getCurrency() {
-        return currency;
+    public Integer getMonths() {
+        return months;
     }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    
+    public void setMonths(Integer months) {
+        this.months = months;
     }
-
-    // Getter and Setter for loanDate
-    public LocalDate getLoanDate() {
-        return loanDate;
-    }
-
-    public void setLoanDate(LocalDate loanDate) {
-        this.loanDate = loanDate;
-    }
-
-    // Getter and Setter for dueDate
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
+    
 }
