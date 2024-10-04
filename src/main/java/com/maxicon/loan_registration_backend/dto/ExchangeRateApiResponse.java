@@ -15,9 +15,9 @@ public class ExchangeRateApiResponse {
     }
 
     public static class ExchangeRate {
-        private String cotacaoCompra; // Buying rate
-        private String cotacaoVenda;  // Selling rate
-        private String dataHoraCotacao;  // Date of the rate
+        private String cotacaoCompra;
+        private String cotacaoVenda;
+        private String dataHoraCotacao; 
 
         public String getCotacaoCompra() {
             return cotacaoCompra;

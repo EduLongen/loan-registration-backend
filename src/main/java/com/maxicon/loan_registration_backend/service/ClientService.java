@@ -24,7 +24,7 @@ public class ClientService {
         Optional<Client> existingClient = clientRepository.findByCpf(client.getCpf());
 
         if (existingClient.isPresent()) {
-            throw new IllegalArgumentException("CPF already exists in the system: " + client.getCpf());
+            throw new IllegalArgumentException("Já existe um usuário cadastrado com este cpf: " + client.getCpf());
         }
 
         // Save the new client if CPF does not exist
@@ -48,7 +48,7 @@ public class ClientService {
         List<Loan> loans = loanRepository.findByClient(client);
 
         if (!loans.isEmpty()) {
-            throw new IllegalArgumentException("Client has active loans and cannot be deleted");
+            throw new IllegalArgumentException("Cliente possui empréstimos ativos e não pode ser excluído");
         }
 
         // If no loans are found, proceed to delete the client

@@ -25,9 +25,8 @@ public class ExchangeRate {
     private Double sellRate;
 
     @Column(nullable = false)
-    private LocalDate date; // The date for which the exchange rate applies
+    private LocalDate date;
 
-    // Optional: Add manual getters and setters if Lombok is not working
     public Currency getCurrency() {
         return currency;
     }

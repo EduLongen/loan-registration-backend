@@ -54,11 +54,14 @@ public class CurrencyService {
     public Map<String, Double> getBRLConversionRates() {
         Map<String, Double> conversionRates = new HashMap<>();
 
+        // Force cache refresh to ensure up-to-date data
+        refreshCurrencyCache();  // This ensures fresh data is fetched from the API
+
         // Iterate through cached currency data and fetch BRL conversion rates
         for (String currencyCode : currencyCache.keySet()) {
-            // Assuming the current date or a specific range is needed for the conversion
+            // Get the exchange rate for the current day
             LocalDate today = LocalDate.now();
-            ExchangeRateApiResponse response = getExchangeRate(currencyCode, today.minusDays(1), today);
+            ExchangeRateApiResponse response = getExchangeRate(currencyCode, today, today);  // Use today for both start and end date
             if (response != null && !response.getValue().isEmpty()) {
                 Double rate = Double.valueOf(response.getValue().get(0).getCotacaoVenda());
                 conversionRates.put(currencyCode, rate);  // Selling rate to BRL
@@ -68,13 +71,16 @@ public class CurrencyService {
     }
 
     public BigDecimal getExchangeRateToBRL(String currencyCode) {
-    ExchangeRateApiResponse response = getExchangeRate(currencyCode, LocalDate.now().minusDays(1), LocalDate.now());
-    // Assuming you are using the first rate from the API response
-    if (response != null && !response.getValue().isEmpty()) {
-        String exchangeRateStr = response.getValue().get(0).getCotacaoVenda(); // Selling rate (cotacaoVenda)
-        return new BigDecimal(exchangeRateStr);
+        ExchangeRateApiResponse response = getExchangeRate(currencyCode, LocalDate.now(), LocalDate.now());
+        
+        // Assuming you want the last rate from the API response
+        if (response != null && !response.getValue().isEmpty()) {
+            int lastIndex = response.getValue().size() - 1;  // Get the last entry in the list
+            String exchangeRateStr = response.getValue().get(lastIndex).getCotacaoVenda(); // Latest selling rate (cotacaoVenda)
+            return new BigDecimal(exchangeRateStr);
+        }
+        throw new IllegalArgumentException("Exchange rate for " + currencyCode + " not found");
     }
-    throw new IllegalArgumentException("Exchange rate for " + currencyCode + " not found");
-}
+      
 
 }
