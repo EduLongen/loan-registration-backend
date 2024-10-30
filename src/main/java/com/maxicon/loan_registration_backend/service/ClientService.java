@@ -67,6 +67,12 @@ public class ClientService {
             existingClient.setCpf(updatedClient.getCpf());
             return clientRepository.save(existingClient);
         });
-    }        
+    }
+    
+    public List<Loan> getLoansByClientCpf(String cpf) {
+        Client client = clientRepository.findByCpf(cpf)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found with CPF: " + cpf));
+        return loanRepository.findByClient(client);
+    }
     
 }

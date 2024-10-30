@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/loans")
+@CrossOrigin(origins = "http://localhost:4200")
 public class LoanController {
 
     @Autowired
@@ -23,7 +24,7 @@ public class LoanController {
     @Autowired
     private ClientService clientService;
 
-    @PostMapping 
+    @PostMapping
     public ResponseEntity<Loan> createLoan(@RequestBody LoanRequest loanRequest) {
         Client client = clientService.findByCpf(loanRequest.getCpf())
                 .orElseThrow(() -> new IllegalArgumentException("Não foi possível encontrar o cliente com o cpf: " + loanRequest.getCpf()));
@@ -47,7 +48,7 @@ public class LoanController {
         return loanService.getAllLoans();
     }
 
-    @GetMapping("/client/{cpf}")
+    @GetMapping("/client/{cpf}")  // Keep this endpoint for fetching loans by client CPF
     public ResponseEntity<List<Loan>> getLoansByClientCpf(@PathVariable String cpf) {
         List<Loan> loans = loanService.getLoansByClientCpf(cpf);
         if (loans.isEmpty()) {

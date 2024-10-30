@@ -42,7 +42,7 @@ public class LoanService {
         }
     
         // Set the calculated months in the Loan entity
-        loan.setMonths((int) months);  // <-- Aqui você está setando o valor de months
+        loan.setMonths((int) months);  
         
         // Calculate the total amount with compound interest
         BigDecimal totalAmount = calculateCompoundInterest(
