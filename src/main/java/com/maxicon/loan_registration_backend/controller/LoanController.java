@@ -48,7 +48,7 @@ public class LoanController {
         return loanService.getAllLoans();
     }
 
-    @GetMapping("/client/{cpf}")  // Keep this endpoint for fetching loans by client CPF
+    @GetMapping("/client/{cpf}") 
     public ResponseEntity<List<Loan>> getLoansByClientCpf(@PathVariable String cpf) {
         List<Loan> loans = loanService.getLoansByClientCpf(cpf);
         if (loans.isEmpty()) {

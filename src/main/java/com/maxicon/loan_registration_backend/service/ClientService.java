@@ -57,7 +57,7 @@ public class ClientService {
 
 
     public Optional<Client> findById(Long id) {
-        return clientRepository.findById(id);  // Assuming clientRepository is a JpaRepository or CrudRepository
+        return clientRepository.findById(id); 
     }
 
     public Optional<Client> updateClient(Long id, Client updatedClient) {

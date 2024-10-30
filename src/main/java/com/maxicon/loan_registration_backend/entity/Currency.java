@@ -13,12 +13,11 @@ public class Currency {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String symbol; // 3-letter currency code (e.g., USD, EUR)
+    private String symbol; 
 
     @Column(nullable = false)
-    private String name; // Full name of the currency (e.g., US Dollar, Euro)
+    private String name; 
 
-    // Optional: Add manual getters and setters if Lombok is not working
     public String getSymbol() {
         return symbol;
     }
