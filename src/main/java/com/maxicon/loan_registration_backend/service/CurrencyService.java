@@ -73,7 +73,6 @@ public class CurrencyService {
     public BigDecimal getExchangeRateToBRL(String currencyCode) {
         ExchangeRateApiResponse response = getExchangeRate(currencyCode, LocalDate.now(), LocalDate.now());
         
-        // Assuming you want the last rate from the API response
         if (response != null && !response.getValue().isEmpty()) {
             int lastIndex = response.getValue().size() - 1;  // Get the last entry in the list
             String exchangeRateStr = response.getValue().get(lastIndex).getCotacaoVenda(); // Latest selling rate (cotacaoVenda)

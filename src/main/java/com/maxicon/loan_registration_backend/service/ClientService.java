@@ -57,7 +57,7 @@ public class ClientService {
 
 
     public Optional<Client> findById(Long id) {
-        return clientRepository.findById(id);  // Assuming clientRepository is a JpaRepository or CrudRepository
+        return clientRepository.findById(id); 
     }
 
     public Optional<Client> updateClient(Long id, Client updatedClient) {
@@ -67,6 +67,12 @@ public class ClientService {
             existingClient.setCpf(updatedClient.getCpf());
             return clientRepository.save(existingClient);
         });
-    }        
+    }
+    
+    public List<Loan> getLoansByClientCpf(String cpf) {
+        Client client = clientRepository.findByCpf(cpf)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found with CPF: " + cpf));
+        return loanRepository.findByClient(client);
+    }
     
 }
