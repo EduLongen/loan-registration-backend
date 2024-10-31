@@ -42,7 +42,7 @@ public class ClientService {
     public void deleteClient(Long id) {
         // First, find the client by id
         Client client = clientRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Client not found with id: " + id));
+            .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado para o id: " + id));
 
         // Now, check if the client has any associated loans
         List<Loan> loans = loanRepository.findByClient(client);
