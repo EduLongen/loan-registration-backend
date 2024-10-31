@@ -78,7 +78,7 @@ public class CurrencyService {
             String exchangeRateStr = response.getValue().get(lastIndex).getCotacaoVenda(); // Latest selling rate (cotacaoVenda)
             return new BigDecimal(exchangeRateStr);
         }
-        throw new IllegalArgumentException("Exchange rate for " + currencyCode + " not found");
+        throw new IllegalArgumentException("Taxa de conversão para " + currencyCode + " não encontrada");
     }
       
 

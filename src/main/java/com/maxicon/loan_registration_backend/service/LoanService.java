@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ public class LoanService {
     public Loan registerLoan(Loan loan, BigDecimal interestRate) {
         // Ensure the interest rate is valid
         if (interestRate.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Interest rate must be greater than 0");
+            throw new IllegalArgumentException("A taxa de juros deve ser maior que 0");
         }
     
         BigDecimal principal = loan.getAmount();
@@ -38,7 +37,7 @@ public class LoanService {
         // Calculate the number of months between loanDate and dueDate
         long months = ChronoUnit.MONTHS.between(loan.getLoanDate(), loan.getDueDate());
         if (months <= 0) {
-            throw new IllegalArgumentException("Due date must be after loan date");
+            throw new IllegalArgumentException("Data de Vencimento deve ser após Data de Empréstimo");
         }
     
         // Set the calculated months in the Loan entity
@@ -111,7 +110,7 @@ public class LoanService {
 
     public List<Loan> getLoansByClientCpf(String cpf) {
         Client client = clientRepository.findByCpf(cpf)
-                .orElseThrow(() -> new IllegalArgumentException("Client not found with CPF: " + cpf));
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado para o cpf: " + cpf));
         return loanRepository.findByClient(client);
     }
 }
